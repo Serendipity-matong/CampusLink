@@ -1,0 +1,167 @@
+/* CampusLink 校园风格主题样式 */
+
+:root {
+  /* 主色调 - 校园蓝 */
+  --campus-primary: #1E88E5;
+  --campus-primary-light: #42A5F5;
+  --campus-primary-lighter: #90CAF9;
+  
+  /* 辅助色 - 活力绿 */
+  --campus-success: #66BB6A;
+  --campus-success-light: #81C784;
+  
+  /* 警告色 */
+  --campus-warning: #FFA726;
+  
+  /* 文字颜色 */
+  --campus-text-primary: #2C3E50;
+  --campus-text-secondary: #7F8C8D;
+  --campus-text-light: #BDC3C7;
+  
+  /* 背景色 */
+  --campus-bg-primary: #FFFFFF;
+  --campus-bg-secondary: #F7F9FC;
+  --campus-bg-hover: #E3F2FD;
+  
+  /* 边框 */
+  --campus-border: #E0E6ED;
+  
+  /* 阴影 */
+  --campus-shadow-sm: 0 2px 8px rgba(30, 136, 229, 0.08);
+  --campus-shadow-md: 0 4px 16px rgba(30, 136, 229, 0.12);
+  --campus-shadow-lg: 0 8px 24px rgba(30, 136, 229, 0.15);
+  
+  /* 圆角 */
+  --campus-radius-sm: 8px;
+  --campus-radius-md: 12px;
+  --campus-radius-lg: 16px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  background: var(--campus-bg-secondary);
+  color: var(--campus-text-primary);
+  line-height: 1.6;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--campus-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--campus-primary-lighter);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--campus-primary-light);
+}
+
+/* 通用卡片样式 */
+.campus-card {
+  background: var(--campus-bg-primary);
+  border-radius: var(--campus-radius-md);
+  box-shadow: var(--campus-shadow-sm);
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.campus-card:hover {
+  box-shadow: var(--campus-shadow-md);
+  transform: translateY(-2px);
+}
+
+/* 通用按钮样式 */
+.campus-btn-primary {
+  background: linear-gradient(135deg, var(--campus-primary) 0%, var(--campus-primary-light) 100%);
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--campus-radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.campus-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--campus-shadow-md);
+}
+
+/* 页面容器 */
+.campus-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* 渐变背景 */
+.campus-gradient-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--campus-primary) 0%, var(--campus-primary-light) 50%, var(--campus-success) 100%);
+}
+
+/* 标签样式 */
+.campus-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--campus-bg-hover);
+  color: var(--campus-primary);
+}
+
+/* 头像样式 */
+.campus-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--campus-primary-lighter);
+  object-fit: cover;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .campus-container {
+    padding: 12px;
+  }
+  
+  .campus-card {
+    padding: 16px;
+  }
+}
+
+/* Element Plus 自定义样式 */
+.el-button--primary {
+  background: var(--campus-primary);
+  border-color: var(--campus-primary);
+}
+
+.el-button--primary:hover {
+  background: var(--campus-primary-light);
+  border-color: var(--campus-primary-light);
+}
+
+.el-menu-item.is-active {
+  color: var(--campus-primary) !important;
+  background: var(--campus-bg-hover) !important;
+}
+

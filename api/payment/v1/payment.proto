@@ -1,0 +1,168 @@
+syntax = "proto3";
+
+package api.payment.v1;
+
+option go_package = "github.com/campuslink/campuslink/api/payment/v1;v1";
+
+// Payment 支付服务
+service Payment {
+  // 创建支付
+  rpc CreatePayment(CreatePaymentRequest) returns (CreatePaymentReply);
+  // 查询支付状态
+  rpc QueryPayment(QueryPaymentRequest) returns (QueryPaymentReply);
+  // 支付回调
+  rpc PaymentCallback(PaymentCallbackRequest) returns (PaymentCallbackReply);
+  // 申请退款
+  rpc CreateRefund(CreateRefundRequest) returns (CreateRefundReply);
+  // 查询退款状态
+  rpc QueryRefund(QueryRefundRequest) returns (QueryRefundReply);
+  // 获取余额
+  rpc GetBalance(GetBalanceRequest) returns (GetBalanceReply);
+  // 充值
+  rpc Recharge(RechargeRequest) returns (RechargeReply);
+  // 提现
+  rpc Withdraw(WithdrawRequest) returns (WithdrawReply);
+}
+
+// 创建支付请求
+message CreatePaymentRequest {
+  uint64 order_id = 1;        // 订单ID
+  uint64 user_id = 2;         // 用户ID
+  double amount = 3;          // 支付金额
+  string payment_method = 4;  // 支付方式: wechat, alipay, balance
+  string subject = 5;         // 支付主题
+  string body = 6;            // 支付描述
+}
+
+// 创建支付响应
+message CreatePaymentReply {
+  uint64 payment_id = 1;
+  string payment_no = 2;      // 支付单号
+  string payment_url = 3;     // 支付URL (第三方支付)
+  string qr_code = 4;         // 二维码 (扫码支付)
+  string message = 5;
+}
+
+// 查询支付请求
+message QueryPaymentRequest {
+  uint64 payment_id = 1;
+  string payment_no = 2;
+}
+
+// 查询支付响应
+message QueryPaymentReply {
+  PaymentInfo payment = 1;
+}
+
+// 支付回调请求
+message PaymentCallbackRequest {
+  string payment_no = 1;
+  string transaction_id = 2;  // 第三方交易号
+  string status = 3;
+  map<string, string> extra = 4;
+}
+
+// 支付回调响应
+message PaymentCallbackReply {
+  string message = 1;
+}
+
+// 创建退款请求
+message CreateRefundRequest {
+  uint64 payment_id = 1;
+  uint64 order_id = 2;
+  uint64 user_id = 3;
+  double refund_amount = 4;
+  string reason = 5;
+}
+
+// 创建退款响应
+message CreateRefundReply {
+  uint64 refund_id = 1;
+  string refund_no = 2;
+  string message = 3;
+}
+
+// 查询退款请求
+message QueryRefundRequest {
+  uint64 refund_id = 1;
+  string refund_no = 2;
+}
+
+// 查询退款响应
+message QueryRefundReply {
+  RefundInfo refund = 1;
+}
+
+// 获取余额请求
+message GetBalanceRequest {
+  uint64 user_id = 1;
+}
+
+// 获取余额响应
+message GetBalanceReply {
+  double balance = 1;
+  double frozen_balance = 2;  // 冻结余额
+  double total_income = 3;    // 总收入
+  double total_expense = 4;   // 总支出
+}
+
+// 充值请求
+message RechargeRequest {
+  uint64 user_id = 1;
+  double amount = 2;
+  string payment_method = 3;
+}
+
+// 充值响应
+message RechargeReply {
+  uint64 payment_id = 1;
+  string payment_no = 2;
+  string payment_url = 3;
+  string message = 4;
+}
+
+// 提现请求
+message WithdrawRequest {
+  uint64 user_id = 1;
+  double amount = 2;
+  string account_type = 3;    // wechat, alipay, bank
+  string account_no = 4;
+  string account_name = 5;
+}
+
+// 提现响应
+message WithdrawReply {
+  uint64 withdraw_id = 1;
+  string withdraw_no = 2;
+  string message = 3;
+}
+
+// 支付信息
+message PaymentInfo {
+  uint64 payment_id = 1;
+  string payment_no = 2;
+  uint64 order_id = 3;
+  uint64 user_id = 4;
+  double amount = 5;
+  string payment_method = 6;
+  string status = 7;          // pending, success, failed, closed
+  string transaction_id = 8;
+  string created_at = 9;
+  string paid_at = 10;
+}
+
+// 退款信息
+message RefundInfo {
+  uint64 refund_id = 1;
+  string refund_no = 2;
+  uint64 payment_id = 3;
+  uint64 order_id = 4;
+  double refund_amount = 5;
+  string reason = 6;
+  string status = 7;          // pending, success, failed
+  string created_at = 8;
+  string refunded_at = 9;
+}
+
+

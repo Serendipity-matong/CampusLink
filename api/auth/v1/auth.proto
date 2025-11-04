@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+package api.auth.v1;
+
+option go_package = "github.com/campuslink/campuslink/api/auth/v1;v1";
+
+// Auth 认证服务
+service Auth {
+  // 用户登录
+  rpc Login(LoginRequest) returns (LoginReply);
+  // 用户注册
+  rpc Register(RegisterRequest) returns (RegisterReply);
+  // 刷新Token
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenReply);
+  // 验证Token
+  rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenReply);
+  // 用户登出
+  rpc Logout(LogoutRequest) returns (LogoutReply);
+  // 修改密码
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordReply);
+}
+
+// 登录请求
+message LoginRequest {
+  string username = 1;  // 用户名/手机号/学号
+  string password = 2;  // 密码
+  string login_type = 3; // 登录类型：username/phone/student_id
+}
+
+// 登录响应
+message LoginReply {
+  string access_token = 1;   // 访问令牌
+  string refresh_token = 2;  // 刷新令牌
+  int64 expires_in = 3;      // 过期时间(秒)
+  UserInfo user_info = 4;    // 用户信息
+}
+
+// 注册请求
+message RegisterRequest {
+  string username = 1;    // 用户名
+  string password = 2;    // 密码
+  string phone = 3;       // 手机号
+  string student_id = 4;  // 学号
+  string real_name = 5;   // 真实姓名
+  string school = 6;      // 学校
+  string verification_code = 7; // 验证码
+}
+
+// 注册响应
+message RegisterReply {
+  uint64 user_id = 1;
+  string message = 2;
+}
+
+// 刷新Token请求
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+// 刷新Token响应
+message RefreshTokenReply {
+  string access_token = 1;
+  string refresh_token = 2;
+  int64 expires_in = 3;
+}
+
+// 验证Token请求
+message VerifyTokenRequest {
+  string token = 1;
+}
+
+// 验证Token响应
+message VerifyTokenReply {
+  bool valid = 1;
+  uint64 user_id = 2;
+  string username = 3;
+  string role = 4;
+}
+
+// 登出请求
+message LogoutRequest {
+  string token = 1;
+}
+
+// 登出响应
+message LogoutReply {
+  string message = 1;
+}
+
+// 修改密码请求
+message ChangePasswordRequest {
+  uint64 user_id = 1;
+  string old_password = 2;
+  string new_password = 3;
+}
+
+// 修改密码响应
+message ChangePasswordReply {
+  string message = 1;
+}
+
+// 用户信息
+message UserInfo {
+  uint64 user_id = 1;
+  string username = 2;
+  string phone = 3;
+  string student_id = 4;
+  string real_name = 5;
+  string school = 6;
+  string avatar = 7;
+  string role = 8;
+}
+
+

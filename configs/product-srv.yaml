@@ -1,0 +1,24 @@
+server:
+  http:
+    network: tcp
+    addr: 0.0.0.0:10003
+    timeout: 10000000000
+  grpc:
+    network: tcp
+    addr: 0.0.0.0:9003
+    timeout: 10000000000
+
+data:
+  database:
+    driver: mysql
+    source: root:123@tcp(127.0.0.1:3306)/campuslink?charset=utf8mb4&parseTime=True&loc=Local
+    max_idle_conns: 10
+    max_open_conns: 100
+    conn_max_lifetime: 3600000000000
+  redis:
+    addr: 127.0.0.1:6379
+    password: ""
+    db: 0
+    dial_timeout: 5000000000
+    read_timeout: 3000000000
+    write_timeout: 3000000000

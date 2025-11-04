@@ -1,0 +1,28 @@
+server:
+  http:
+    network: tcp
+    addr: 0.0.0.0:10001
+    timeout: 10000000000  # 10秒（纳秒）
+  grpc:
+    network: tcp
+    addr: 0.0.0.0:9001
+    timeout: 10000000000  # 10秒（纳秒）
+
+data:
+  database:
+    driver: mysql
+    source: root:123@tcp(127.0.0.1:3306)/campuslink?charset=utf8mb4&parseTime=True&loc=Local
+    max_idle_conns: 10
+    max_open_conns: 100
+    conn_max_lifetime: 3600000000000  # 1小时（纳秒）
+  redis:
+    addr: 127.0.0.1:6379
+    password: ""
+    db: 0
+    dial_timeout: 5000000000  # 5秒（纳秒）
+    read_timeout: 3000000000  # 3秒（纳秒）
+    write_timeout: 3000000000  # 3秒（纳秒）
+  jwt:
+    secret: "campuslink-secret-key-change-in-production"
+    issuer: "campuslink"
+    expiration: 7200000000000  # 2小时（纳秒）

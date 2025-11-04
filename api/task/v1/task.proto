@@ -1,0 +1,184 @@
+syntax = "proto3";
+
+package api.task.v1;
+
+option go_package = "github.com/campuslink/campuslink/api/task/v1;v1";
+
+// Task 跑腿/代课服务
+service Task {
+  // 发布任务
+  rpc CreateTask(CreateTaskRequest) returns (CreateTaskReply);
+  // 更新任务
+  rpc UpdateTask(UpdateTaskRequest) returns (UpdateTaskReply);
+  // 删除任务
+  rpc DeleteTask(DeleteTaskRequest) returns (DeleteTaskReply);
+  // 获取任务详情
+  rpc GetTask(GetTaskRequest) returns (GetTaskReply);
+  // 获取任务列表
+  rpc ListTasks(ListTasksRequest) returns (ListTasksReply);
+  // 接受任务
+  rpc AcceptTask(AcceptTaskRequest) returns (AcceptTaskReply);
+  // 完成任务
+  rpc CompleteTask(CompleteTaskRequest) returns (CompleteTaskReply);
+  // 取消任务
+  rpc CancelTask(CancelTaskRequest) returns (CancelTaskReply);
+  // 评价任务
+  rpc RateTask(RateTaskRequest) returns (RateTaskReply);
+}
+
+// 创建任务请求
+message CreateTaskRequest {
+  string title = 1;           // 任务标题
+  string description = 2;     // 任务描述
+  string task_type = 3;       // 任务类型: errand(跑腿), substitute(代课), other
+  double reward = 4;          // 报酬
+  string pickup_location = 5; // 取件地点
+  string delivery_location = 6; // 送件地点
+  string deadline = 7;        // 截止时间
+  uint64 publisher_id = 8;    // 发布者ID
+  string contact_phone = 9;   // 联系电话
+  repeated string images = 10; // 图片
+  map<string, string> extra = 11; // 额外信息
+}
+
+// 创建任务响应
+message CreateTaskReply {
+  uint64 task_id = 1;
+  string message = 2;
+}
+
+// 更新任务请求
+message UpdateTaskRequest {
+  uint64 task_id = 1;
+  string title = 2;
+  string description = 3;
+  double reward = 4;
+  string pickup_location = 5;
+  string delivery_location = 6;
+  string deadline = 7;
+  string contact_phone = 8;
+}
+
+// 更新任务响应
+message UpdateTaskReply {
+  string message = 1;
+}
+
+// 删除任务请求
+message DeleteTaskRequest {
+  uint64 task_id = 1;
+  uint64 publisher_id = 2;
+}
+
+// 删除任务响应
+message DeleteTaskReply {
+  string message = 1;
+}
+
+// 获取任务请求
+message GetTaskRequest {
+  uint64 task_id = 1;
+}
+
+// 获取任务响应
+message GetTaskReply {
+  TaskInfo task = 1;
+}
+
+// 任务列表请求
+message ListTasksRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  string task_type = 3;       // 类型筛选
+  uint64 publisher_id = 4;    // 发布者筛选
+  uint64 executor_id = 5;     // 接单者筛选
+  string status = 6;          // 状态筛选
+  string keyword = 7;         // 关键词搜索
+  double reward_min = 8;      // 最低报酬
+  double reward_max = 9;      // 最高报酬
+}
+
+// 任务列表响应
+message ListTasksReply {
+  repeated TaskInfo tasks = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// 接受任务请求
+message AcceptTaskRequest {
+  uint64 task_id = 1;
+  uint64 executor_id = 2;
+  string message = 3;  // 接单留言
+}
+
+// 接受任务响应
+message AcceptTaskReply {
+  string message = 1;
+}
+
+// 完成任务请求
+message CompleteTaskRequest {
+  uint64 task_id = 1;
+  uint64 executor_id = 2;
+  string completion_note = 3; // 完成说明
+  repeated string proof_images = 4; // 完成凭证图片
+}
+
+// 完成任务响应
+message CompleteTaskReply {
+  string message = 1;
+}
+
+// 取消任务请求
+message CancelTaskRequest {
+  uint64 task_id = 1;
+  uint64 user_id = 2;
+  string reason = 3;
+}
+
+// 取消任务响应
+message CancelTaskReply {
+  string message = 1;
+}
+
+// 评价任务请求
+message RateTaskRequest {
+  uint64 task_id = 1;
+  uint64 rater_id = 2;
+  int32 rating = 3;        // 评分 1-5
+  string comment = 4;      // 评价内容
+}
+
+// 评价任务响应
+message RateTaskReply {
+  string message = 1;
+}
+
+// 任务信息
+message TaskInfo {
+  uint64 task_id = 1;
+  string title = 2;
+  string description = 3;
+  string task_type = 4;
+  double reward = 5;
+  string pickup_location = 6;
+  string delivery_location = 7;
+  string deadline = 8;
+  uint64 publisher_id = 9;
+  string publisher_name = 10;
+  uint64 executor_id = 11;
+  string executor_name = 12;
+  string contact_phone = 13;
+  string status = 14;          // pending, accepted, completed, cancelled
+  repeated string images = 15;
+  int64 view_count = 16;
+  string created_at = 17;
+  string updated_at = 18;
+  string accepted_at = 19;
+  string completed_at = 20;
+  map<string, string> extra = 21;
+}
+
+

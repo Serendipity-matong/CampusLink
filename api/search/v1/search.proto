@@ -1,0 +1,167 @@
+syntax = "proto3";
+
+package api.search.v1;
+
+option go_package = "github.com/campuslink/campuslink/api/search/v1;v1";
+
+// Search 搜索服务
+service Search {
+  // 搜索商品
+  rpc SearchProducts(SearchProductsRequest) returns (SearchProductsReply);
+  // 搜索任务
+  rpc SearchTasks(SearchTasksRequest) returns (SearchTasksReply);
+  // 搜索用户
+  rpc SearchUsers(SearchUsersRequest) returns (SearchUsersReply);
+  // 综合搜索
+  rpc GlobalSearch(GlobalSearchRequest) returns (GlobalSearchReply);
+  // 获取热搜词
+  rpc GetHotKeywords(GetHotKeywordsRequest) returns (GetHotKeywordsReply);
+  // 搜索建议
+  rpc GetSearchSuggestions(GetSearchSuggestionsRequest) returns (GetSearchSuggestionsReply);
+}
+
+// 搜索商品请求
+message SearchProductsRequest {
+  string keyword = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+  string category = 4;
+  string product_type = 5;
+  double price_min = 6;
+  double price_max = 7;
+  string condition = 8;
+  string sort_by = 9;         // relevance, price_asc, price_desc, created_desc
+}
+
+// 搜索商品响应
+message SearchProductsReply {
+  repeated ProductResult products = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// 商品搜索结果
+message ProductResult {
+  uint64 product_id = 1;
+  string name = 2;
+  string description = 3;
+  string category = 4;
+  string product_type = 5;
+  double price = 6;
+  string image = 7;
+  uint64 seller_id = 8;
+  string seller_name = 9;
+  string location = 10;
+  float score = 11;           // 搜索相关度评分
+}
+
+// 搜索任务请求
+message SearchTasksRequest {
+  string keyword = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+  string task_type = 4;
+  double reward_min = 5;
+  double reward_max = 6;
+  string status = 7;
+}
+
+// 搜索任务响应
+message SearchTasksReply {
+  repeated TaskResult tasks = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// 任务搜索结果
+message TaskResult {
+  uint64 task_id = 1;
+  string title = 2;
+  string description = 3;
+  string task_type = 4;
+  double reward = 5;
+  string pickup_location = 6;
+  string delivery_location = 7;
+  uint64 publisher_id = 8;
+  string publisher_name = 9;
+  string status = 10;
+  float score = 11;
+}
+
+// 搜索用户请求
+message SearchUsersRequest {
+  string keyword = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+  string role = 4;
+  bool verified_only = 5;
+}
+
+// 搜索用户响应
+message SearchUsersReply {
+  repeated UserResult users = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// 用户搜索结果
+message UserResult {
+  uint64 user_id = 1;
+  string username = 2;
+  string nickname = 3;
+  string avatar = 4;
+  string school = 5;
+  string role = 6;
+  bool verified = 7;
+  float score = 8;
+}
+
+// 综合搜索请求
+message GlobalSearchRequest {
+  string keyword = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+// 综合搜索响应
+message GlobalSearchReply {
+  repeated ProductResult products = 1;
+  repeated TaskResult tasks = 2;
+  repeated UserResult users = 3;
+  int64 total_products = 4;
+  int64 total_tasks = 5;
+  int64 total_users = 6;
+}
+
+// 获取热搜词请求
+message GetHotKeywordsRequest {
+  int32 limit = 1;
+}
+
+// 获取热搜词响应
+message GetHotKeywordsReply {
+  repeated HotKeyword keywords = 1;
+}
+
+// 热搜词
+message HotKeyword {
+  string keyword = 1;
+  int64 search_count = 2;
+  int32 rank = 3;
+}
+
+// 搜索建议请求
+message GetSearchSuggestionsRequest {
+  string prefix = 1;
+  int32 limit = 2;
+}
+
+// 搜索建议响应
+message GetSearchSuggestionsReply {
+  repeated string suggestions = 1;
+}
+
+

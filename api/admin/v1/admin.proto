@@ -1,0 +1,208 @@
+syntax = "proto3";
+
+package api.admin.v1;
+
+option go_package = "github.com/campuslink/campuslink/api/admin/v1;v1";
+
+// Admin 后台管理服务
+service Admin {
+  // 获取系统统计
+  rpc GetSystemStats(GetSystemStatsRequest) returns (GetSystemStatsReply);
+  // 获取用户列表
+  rpc ListUsers(ListUsersRequest) returns (ListUsersReply);
+  // 封禁用户
+  rpc BanUser(BanUserRequest) returns (BanUserReply);
+  // 解封用户
+  rpc UnbanUser(UnbanUserRequest) returns (UnbanUserReply);
+  // 审核商品
+  rpc ReviewProduct(ReviewProductRequest) returns (ReviewProductReply);
+  // 审核任务
+  rpc ReviewTask(ReviewTaskRequest) returns (ReviewTaskReply);
+  // 处理举报
+  rpc HandleReport(HandleReportRequest) returns (HandleReportReply);
+  // 获取举报列表
+  rpc ListReports(ListReportsRequest) returns (ListReportsReply);
+  // 系统配置管理
+  rpc GetConfig(GetConfigRequest) returns (GetConfigReply);
+  // 更新系统配置
+  rpc UpdateConfig(UpdateConfigRequest) returns (UpdateConfigReply);
+}
+
+// 获取系统统计请求
+message GetSystemStatsRequest {
+  string date_range = 1;      // today, week, month, year
+}
+
+// 获取系统统计响应
+message GetSystemStatsReply {
+  int64 total_users = 1;
+  int64 active_users = 2;
+  int64 total_products = 3;
+  int64 total_tasks = 4;
+  int64 total_orders = 5;
+  double total_transaction_amount = 6;
+  int64 new_users_today = 7;
+  int64 new_orders_today = 8;
+  repeated DailyStats daily_stats = 9;
+}
+
+// 每日统计
+message DailyStats {
+  string date = 1;
+  int64 new_users = 2;
+  int64 new_orders = 3;
+  double transaction_amount = 4;
+}
+
+// 用户列表请求
+message ListUsersRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  string keyword = 3;
+  string role = 4;
+  string status = 5;          // active, banned
+  bool verified_only = 6;
+}
+
+// 用户列表响应
+message ListUsersReply {
+  repeated AdminUserInfo users = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// 管理员用户信息
+message AdminUserInfo {
+  uint64 user_id = 1;
+  string username = 2;
+  string phone = 3;
+  string student_id = 4;
+  string real_name = 5;
+  string school = 6;
+  string role = 7;
+  bool verified = 8;
+  string status = 9;
+  int64 credit_score = 10;
+  string created_at = 11;
+  string last_login_at = 12;
+}
+
+// 封禁用户请求
+message BanUserRequest {
+  uint64 user_id = 1;
+  string reason = 2;
+  int32 ban_days = 3;         // 0表示永久封禁
+  uint64 admin_id = 4;
+}
+
+// 封禁用户响应
+message BanUserReply {
+  string message = 1;
+}
+
+// 解封用户请求
+message UnbanUserRequest {
+  uint64 user_id = 1;
+  uint64 admin_id = 2;
+}
+
+// 解封用户响应
+message UnbanUserReply {
+  string message = 1;
+}
+
+// 审核商品请求
+message ReviewProductRequest {
+  uint64 product_id = 1;
+  bool approved = 2;
+  string reason = 3;
+  uint64 admin_id = 4;
+}
+
+// 审核商品响应
+message ReviewProductReply {
+  string message = 1;
+}
+
+// 审核任务请求
+message ReviewTaskRequest {
+  uint64 task_id = 1;
+  bool approved = 2;
+  string reason = 3;
+  uint64 admin_id = 4;
+}
+
+// 审核任务响应
+message ReviewTaskReply {
+  string message = 1;
+}
+
+// 处理举报请求
+message HandleReportRequest {
+  uint64 report_id = 1;
+  string action = 2;          // dismiss, warn, ban
+  string reason = 3;
+  uint64 admin_id = 4;
+}
+
+// 处理举报响应
+message HandleReportReply {
+  string message = 1;
+}
+
+// 举报列表请求
+message ListReportsRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  string report_type = 3;     // user, product, task, order
+  string status = 4;          // pending, processed
+}
+
+// 举报列表响应
+message ListReportsReply {
+  repeated ReportInfo reports = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// 举报信息
+message ReportInfo {
+  uint64 report_id = 1;
+  uint64 reporter_id = 2;
+  string reporter_name = 3;
+  string report_type = 4;
+  uint64 target_id = 5;
+  string reason = 6;
+  string description = 7;
+  repeated string images = 8;
+  string status = 9;
+  string created_at = 10;
+  string handled_at = 11;
+  uint64 handler_id = 12;
+  string handle_result = 13;
+}
+
+// 获取配置请求
+message GetConfigRequest {
+  string config_key = 1;
+}
+
+// 获取配置响应
+message GetConfigReply {
+  map<string, string> configs = 1;
+}
+
+// 更新配置请求
+message UpdateConfigRequest {
+  map<string, string> configs = 1;
+  uint64 admin_id = 2;
+}
+
+// 更新配置响应
+message UpdateConfigReply {
+  string message = 1;
+}
+
+

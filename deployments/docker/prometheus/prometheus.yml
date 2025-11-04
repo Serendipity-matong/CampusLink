@@ -1,0 +1,50 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'apisix'
+    static_configs:
+      - targets: ['apisix:9091']
+
+  - job_name: 'auth-srv'
+    static_configs:
+      - targets: ['host.docker.internal:10001']
+
+  - job_name: 'user-srv'
+    static_configs:
+      - targets: ['host.docker.internal:10002']
+
+  - job_name: 'product-srv'
+    static_configs:
+      - targets: ['host.docker.internal:10003']
+
+  - job_name: 'task-srv'
+    static_configs:
+      - targets: ['host.docker.internal:10004']
+
+  - job_name: 'order-srv'
+    static_configs:
+      - targets: ['host.docker.internal:10005']
+
+  - job_name: 'payment-srv'
+    static_configs:
+      - targets: ['host.docker.internal:10006']
+
+  - job_name: 'search-srv'
+    static_configs:
+      - targets: ['host.docker.internal:10007']
+
+  - job_name: 'admin-srv'
+    static_configs:
+      - targets: ['host.docker.internal:10008']
+
+  - job_name: 'biz-srv'
+    static_configs:
+      - targets: ['host.docker.internal:10009']
+
+

@@ -1,0 +1,180 @@
+syntax = "proto3";
+
+package api.product.v1;
+
+option go_package = "github.com/campuslink/campuslink/api/product/v1;v1";
+
+// Product 二手书/租借品服务
+service Product {
+  // 创建商品
+  rpc CreateProduct(CreateProductRequest) returns (CreateProductReply);
+  // 更新商品
+  rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductReply);
+  // 删除商品
+  rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductReply);
+  // 获取商品详情
+  rpc GetProduct(GetProductRequest) returns (GetProductReply);
+  // 获取商品列表
+  rpc ListProducts(ListProductsRequest) returns (ListProductsReply);
+  // 上架商品
+  rpc PublishProduct(PublishProductRequest) returns (PublishProductReply);
+  // 下架商品
+  rpc UnpublishProduct(UnpublishProductRequest) returns (UnpublishProductReply);
+  // 减少库存
+  rpc DeductStock(DeductStockRequest) returns (DeductStockReply);
+  // 增加库存
+  rpc AddStock(AddStockRequest) returns (AddStockReply);
+}
+
+// 创建商品请求
+message CreateProductRequest {
+  string name = 1;              // 商品名称
+  string description = 2;       // 商品描述
+  string category = 3;          // 商品分类: book, electronics, sports, daily
+  string product_type = 4;      // 商品类型: sale(出售), rent(租借)
+  double price = 5;             // 价格
+  double rent_price_daily = 6;  // 日租金
+  int32 stock = 7;              // 库存
+  repeated string images = 8;   // 商品图片
+  uint64 seller_id = 9;         // 卖家ID
+  string condition = 10;        // 成色: new, like_new, good, fair
+  string location = 11;         // 位置
+  map<string, string> extra = 12; // 额外信息
+}
+
+// 创建商品响应
+message CreateProductReply {
+  uint64 product_id = 1;
+  string message = 2;
+}
+
+// 更新商品请求
+message UpdateProductRequest {
+  uint64 product_id = 1;
+  string name = 2;
+  string description = 3;
+  string category = 4;
+  double price = 5;
+  double rent_price_daily = 6;
+  int32 stock = 7;
+  repeated string images = 8;
+  string condition = 9;
+  string location = 10;
+}
+
+// 更新商品响应
+message UpdateProductReply {
+  string message = 1;
+}
+
+// 删除商品请求
+message DeleteProductRequest {
+  uint64 product_id = 1;
+  uint64 seller_id = 2;
+}
+
+// 删除商品响应
+message DeleteProductReply {
+  string message = 1;
+}
+
+// 获取商品请求
+message GetProductRequest {
+  uint64 product_id = 1;
+}
+
+// 获取商品响应
+message GetProductReply {
+  ProductInfo product = 1;
+}
+
+// 商品列表请求
+message ListProductsRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  string category = 3;        // 分类筛选
+  string product_type = 4;    // 类型筛选
+  uint64 seller_id = 5;       // 卖家筛选
+  string keyword = 6;         // 关键词搜索
+  double price_min = 7;       // 最低价
+  double price_max = 8;       // 最高价
+  string condition = 9;       // 成色筛选
+  string sort_by = 10;        // 排序: price_asc, price_desc, created_desc
+}
+
+// 商品列表响应
+message ListProductsReply {
+  repeated ProductInfo products = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// 上架商品请求
+message PublishProductRequest {
+  uint64 product_id = 1;
+  uint64 seller_id = 2;
+}
+
+// 上架商品响应
+message PublishProductReply {
+  string message = 1;
+}
+
+// 下架商品请求
+message UnpublishProductRequest {
+  uint64 product_id = 1;
+  uint64 seller_id = 2;
+}
+
+// 下架商品响应
+message UnpublishProductReply {
+  string message = 1;
+}
+
+// 减少库存请求
+message DeductStockRequest {
+  uint64 product_id = 1;
+  int32 quantity = 2;
+}
+
+// 减少库存响应
+message DeductStockReply {
+  int32 remaining_stock = 1;
+}
+
+// 增加库存请求
+message AddStockRequest {
+  uint64 product_id = 1;
+  int32 quantity = 2;
+}
+
+// 增加库存响应
+message AddStockReply {
+  int32 new_stock = 1;
+}
+
+// 商品信息
+message ProductInfo {
+  uint64 product_id = 1;
+  string name = 2;
+  string description = 3;
+  string category = 4;
+  string product_type = 5;
+  double price = 6;
+  double rent_price_daily = 7;
+  int32 stock = 8;
+  repeated string images = 9;
+  uint64 seller_id = 10;
+  string seller_name = 11;
+  string condition = 12;
+  string location = 13;
+  string status = 14;         // online, offline, sold_out
+  int64 view_count = 15;
+  int64 favorite_count = 16;
+  string created_at = 17;
+  string updated_at = 18;
+  map<string, string> extra = 19;
+}
+
+

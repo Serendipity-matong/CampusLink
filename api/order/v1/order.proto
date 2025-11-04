@@ -1,0 +1,171 @@
+syntax = "proto3";
+
+package api.order.v1;
+
+option go_package = "github.com/campuslink/campuslink/api/order/v1;v1";
+
+// Order 订单服务
+service Order {
+  // 创建订单
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderReply);
+  // 获取订单详情
+  rpc GetOrder(GetOrderRequest) returns (GetOrderReply);
+  // 获取订单列表
+  rpc ListOrders(ListOrdersRequest) returns (ListOrdersReply);
+  // 取消订单
+  rpc CancelOrder(CancelOrderRequest) returns (CancelOrderReply);
+  // 确认订单
+  rpc ConfirmOrder(ConfirmOrderRequest) returns (ConfirmOrderReply);
+  // 完成订单
+  rpc CompleteOrder(CompleteOrderRequest) returns (CompleteOrderReply);
+  // 申请退款
+  rpc RequestRefund(RequestRefundRequest) returns (RequestRefundReply);
+  // 订单评价
+  rpc RateOrder(RateOrderRequest) returns (RateOrderReply);
+}
+
+// 创建订单请求
+message CreateOrderRequest {
+  uint64 buyer_id = 1;        // 买家ID
+  uint64 seller_id = 2;       // 卖家ID
+  string order_type = 3;      // 订单类型: product_sale, product_rent, task
+  repeated OrderItem items = 4; // 订单项
+  double total_amount = 5;    // 总金额
+  string delivery_address = 6; // 配送地址
+  string contact_phone = 7;   // 联系电话
+  string remark = 8;          // 备注
+}
+
+// 订单项
+message OrderItem {
+  uint64 product_id = 1;      // 商品ID
+  string product_name = 2;    // 商品名称
+  int32 quantity = 3;         // 数量
+  double price = 4;           // 单价
+  int32 rent_days = 5;        // 租借天数(租借订单)
+}
+
+// 创建订单响应
+message CreateOrderReply {
+  uint64 order_id = 1;
+  string order_no = 2;        // 订单号
+  string message = 3;
+}
+
+// 获取订单请求
+message GetOrderRequest {
+  uint64 order_id = 1;
+}
+
+// 获取订单响应
+message GetOrderReply {
+  OrderInfo order = 1;
+}
+
+// 订单列表请求
+message ListOrdersRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  uint64 buyer_id = 3;        // 买家筛选
+  uint64 seller_id = 4;       // 卖家筛选
+  string order_type = 5;      // 类型筛选
+  string status = 6;          // 状态筛选
+  string order_no = 7;        // 订单号
+  string start_date = 8;      // 开始日期
+  string end_date = 9;        // 结束日期
+}
+
+// 订单列表响应
+message ListOrdersReply {
+  repeated OrderInfo orders = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// 取消订单请求
+message CancelOrderRequest {
+  uint64 order_id = 1;
+  uint64 user_id = 2;
+  string reason = 3;
+}
+
+// 取消订单响应
+message CancelOrderReply {
+  string message = 1;
+}
+
+// 确认订单请求
+message ConfirmOrderRequest {
+  uint64 order_id = 1;
+  uint64 seller_id = 2;
+}
+
+// 确认订单响应
+message ConfirmOrderReply {
+  string message = 1;
+}
+
+// 完成订单请求
+message CompleteOrderRequest {
+  uint64 order_id = 1;
+  uint64 buyer_id = 2;
+}
+
+// 完成订单响应
+message CompleteOrderReply {
+  string message = 1;
+}
+
+// 申请退款请求
+message RequestRefundRequest {
+  uint64 order_id = 1;
+  uint64 buyer_id = 2;
+  string reason = 3;
+  double refund_amount = 4;
+}
+
+// 申请退款响应
+message RequestRefundReply {
+  uint64 refund_id = 1;
+  string message = 2;
+}
+
+// 订单评价请求
+message RateOrderRequest {
+  uint64 order_id = 1;
+  uint64 rater_id = 2;
+  int32 rating = 3;           // 评分 1-5
+  string comment = 4;         // 评价内容
+  repeated string images = 5; // 评价图片
+}
+
+// 订单评价响应
+message RateOrderReply {
+  string message = 1;
+}
+
+// 订单信息
+message OrderInfo {
+  uint64 order_id = 1;
+  string order_no = 2;
+  uint64 buyer_id = 3;
+  string buyer_name = 4;
+  uint64 seller_id = 5;
+  string seller_name = 6;
+  string order_type = 7;
+  repeated OrderItem items = 8;
+  double total_amount = 9;
+  double paid_amount = 10;
+  string delivery_address = 11;
+  string contact_phone = 12;
+  string remark = 13;
+  string status = 14;         // pending, paid, confirmed, shipped, completed, cancelled, refunding, refunded
+  string payment_method = 15;
+  string payment_time = 16;
+  string created_at = 17;
+  string updated_at = 18;
+  string completed_at = 19;
+}
+
+

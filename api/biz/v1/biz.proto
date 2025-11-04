@@ -1,0 +1,147 @@
+syntax = "proto3";
+
+package api.biz.v1;
+
+option go_package = "github.com/campuslink/campuslink/api/biz/v1;v1";
+
+// Biz 通用业务服务
+service Biz {
+  // 发送短信验证码
+  rpc SendSmsCode(SendSmsCodeRequest) returns (SendSmsCodeReply);
+  // 验证短信验证码
+  rpc VerifySmsCode(VerifySmsCodeRequest) returns (VerifySmsCodeReply);
+  // 上传文件
+  rpc UploadFile(UploadFileRequest) returns (UploadFileReply);
+  // 删除文件
+  rpc DeleteFile(DeleteFileRequest) returns (DeleteFileReply);
+  // 获取文件URL
+  rpc GetFileUrl(GetFileUrlRequest) returns (GetFileUrlReply);
+  // 发送通知
+  rpc SendNotification(SendNotificationRequest) returns (SendNotificationReply);
+  // 获取通知列表
+  rpc ListNotifications(ListNotificationsRequest) returns (ListNotificationsReply);
+  // 标记通知已读
+  rpc MarkNotificationRead(MarkNotificationReadRequest) returns (MarkNotificationReadReply);
+}
+
+// 发送短信验证码请求
+message SendSmsCodeRequest {
+  string phone = 1;
+  string code_type = 2;       // register, login, reset_password
+}
+
+// 发送短信验证码响应
+message SendSmsCodeReply {
+  string message = 1;
+  int32 expires_in = 2;       // 有效期(秒)
+}
+
+// 验证短信验证码请求
+message VerifySmsCodeRequest {
+  string phone = 1;
+  string code = 2;
+  string code_type = 3;
+}
+
+// 验证短信验证码响应
+message VerifySmsCodeReply {
+  bool valid = 1;
+  string message = 2;
+}
+
+// 上传文件请求
+message UploadFileRequest {
+  bytes file_data = 1;
+  string file_name = 2;
+  string file_type = 3;       // image, video, document
+  uint64 user_id = 4;
+}
+
+// 上传文件响应
+message UploadFileReply {
+  string file_id = 1;
+  string file_url = 2;
+  string file_name = 3;
+  int64 file_size = 4;
+}
+
+// 删除文件请求
+message DeleteFileRequest {
+  string file_id = 1;
+  uint64 user_id = 2;
+}
+
+// 删除文件响应
+message DeleteFileReply {
+  string message = 1;
+}
+
+// 获取文件URL请求
+message GetFileUrlRequest {
+  string file_id = 1;
+  int32 expires_in = 2;       // 有效期(秒)
+}
+
+// 获取文件URL响应
+message GetFileUrlReply {
+  string file_url = 1;
+  string expires_at = 2;
+}
+
+// 发送通知请求
+message SendNotificationRequest {
+  uint64 user_id = 1;
+  string title = 2;
+  string content = 3;
+  string notification_type = 4; // system, order, task, message
+  map<string, string> extra = 5;
+}
+
+// 发送通知响应
+message SendNotificationReply {
+  uint64 notification_id = 1;
+  string message = 2;
+}
+
+// 通知列表请求
+message ListNotificationsRequest {
+  uint64 user_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+  string notification_type = 4;
+  bool unread_only = 5;
+}
+
+// 通知列表响应
+message ListNotificationsReply {
+  repeated NotificationInfo notifications = 1;
+  int64 total = 2;
+  int64 unread_count = 3;
+  int32 page = 4;
+  int32 page_size = 5;
+}
+
+// 通知信息
+message NotificationInfo {
+  uint64 notification_id = 1;
+  uint64 user_id = 2;
+  string title = 3;
+  string content = 4;
+  string notification_type = 5;
+  bool is_read = 6;
+  string created_at = 7;
+  map<string, string> extra = 8;
+}
+
+// 标记通知已读请求
+message MarkNotificationReadRequest {
+  uint64 user_id = 1;
+  repeated uint64 notification_ids = 2; // 空数组表示全部已读
+}
+
+// 标记通知已读响应
+message MarkNotificationReadReply {
+  string message = 1;
+}
+
+
